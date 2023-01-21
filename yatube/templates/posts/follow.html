@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% extends 'base.html' %}
+  <head>
+    {% block title %}
+      <title>Подписки</title>
+    {% endblock %}
+  </head>
+  <body>
+    <header>
+    </header>
+    <main> 
+      {% block content %}
+        <div class="container py-5">  
+          <h1>Мои подписки</h1>
+          {% include 'includes/switcher.html' %}
+          {% for post in page_obj %}
+            {% include 'includes/post_list.html' %}
+          {% endfor %}
+          {% include 'includes/paginator.html' %}
+        </div>  
+      {% endblock %}  
+    </main>       
+    <footer class="border-top text-center py-3">  
+    </footer>
+  </body>
+</html>
