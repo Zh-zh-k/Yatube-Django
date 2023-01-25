@@ -1,7 +1,6 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
-from yatube.settings import POST_STR_SYMBOLS
 
 from ..models import Group, Post
 
@@ -24,9 +23,9 @@ class PostModelTest(TestCase):
         )
 
     def test_models_have_correct_object_names(self):
-        """Проверяем, что у моделей корректно работает __str__."""
+        """Проверка, что у моделей корректно работает __str__."""
         post = self.post
-        self.assertEqual(str(post), post.text[:POST_STR_SYMBOLS])
+        self.assertEqual(str(post), post.text[:settings.POST_STR_SYMBOLS])
 
         group = self.group
         self.assertEqual(str(group), group.title)

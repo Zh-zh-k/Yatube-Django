@@ -29,7 +29,7 @@ class PostURLTests(TestCase):
         self.authorized_client.force_login(self.user)
 
     def url_exists_at_desired_location(self):
-        """Страницы доступны пользователям."""
+        """Страницы доступны пользователям"""
         any_user_status_codes = {
             '/': HTTPStatus.OK.value,
             '/group/test_slug/': HTTPStatus.OK.value,
@@ -37,7 +37,11 @@ class PostURLTests(TestCase):
             f'/posts/{self.post.id}/': HTTPStatus.OK.value
         }
         authorized_user_status_code = {
-            '/create/': HTTPStatus.OK.value
+            '/create/': HTTPStatus.OK.value,
+            f'/posts/{self.post.id}/comment/': HTTPStatus.OK.value,
+            '/follow/': HTTPStatus.OK.value,
+            '/profile/NoName/follow/': HTTPStatus.OK.value,
+            '/profile/NoName/unfollow': HTTPStatus.OK.value
         }
         author_status_code = {
             f'/posts/{self.post.id}/edit/': HTTPStatus.OK.value
@@ -62,13 +66,14 @@ class PostURLTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND.value)
 
     def test_urls_uses_correct_template(self):
-        """URL-адрес использует соответствующий шаблон."""
+        """URL-адрес использует соответствующий шаблон"""
         templates_url_names = {
             'posts/index.html': '/',
             'posts/group_list.html': '/group/test_slug/',
             'posts/profile.html': '/profile/NoName/',
             'posts/post_detail.html': f'/posts/{self.post.id}/',
             'posts/create_post.html': '/create/',
+            'posts/follow.html': '/follow/'
         }
         for template, address in templates_url_names.items():
             with self.subTest(address=address):
