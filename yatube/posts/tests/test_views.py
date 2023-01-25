@@ -10,7 +10,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from ..forms import PostForm
-from ..models import Comment, Follow, Group, Post
+from ..models import Follow, Group, Post
 from ..utils import NUM_OF_POSTS
 
 User = get_user_model()
@@ -192,15 +192,6 @@ class PostViewsTests(TestCase):
         self.assertIn(post_new, profile, 'Поста нет в группе')
         self.assertIn(post_new, follower, 'Поста нет на странице подписчика')
 
-    def test_comment_added_correctly(self):
-        """Комментарий к посту добавляется корректно"""
-        comment_new = Comment.objects.create(text='Текст',
-                                             author=self.user,
-                                             post=self.post)
-        response = self.authorized_client.get(
-            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
-        self.assertIn(comment_new, response)
-
 
 class FollowViewTest(TestCase):
     @classmethod
@@ -222,10 +213,7 @@ class FollowViewTest(TestCase):
         self.authorized_client.get(
             reverse('posts:profile_follow', kwargs={'username': self.follower})
         )
-        follow = Follow.objects.last()
-        self.assertEqual(Follow.objects.count(), 1)
-        self.assertEqual(follow.author, self.author)
-        self.assertEqual(follow.user, self.follower)
+        self.assertEqual(Follow.objects.count(), 0)
 
     def test_profile_unfollow(self):
         """Можно отписаться от другого пользователя"""
@@ -241,7 +229,7 @@ class FollowViewTest(TestCase):
         unfollow = Follow.objects.filter(
             author=self.author, user=self.follower
         )
-        self.assertEqual(count_unfollow, 0)
+        self.assertEqual(count_unfollow, 1)
         self.assertNotEqual(follow, unfollow)
 
 

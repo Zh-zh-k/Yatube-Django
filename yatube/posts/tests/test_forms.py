@@ -106,7 +106,7 @@ class PostFormTests(TestCase):
             ).exists()
         )
 
-    def test_comment_create(self):
+    def test_comment_added(self):
         comments_count = Comment.objects.count()
         form_data = {
             'text': 'Тестовый текст',
