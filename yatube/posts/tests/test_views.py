@@ -179,18 +179,12 @@ class PostViewsTests(TestCase):
             reverse('posts:profile',
                     kwargs={'username': f'{self.user.username}'})
         )
-        response_follower = self.authorized_client.get(
-            reverse('posts:follow_index'))
         index = response_index.context['page_obj']
         group = response_group.context['page_obj']
         profile = response_profile.context['page_obj']
-        follower = response_follower.context['page_obj']
-        for page in index:
-            return page.text
         self.assertIn(post_new, index, 'Поста нет на главной')
         self.assertIn(post_new, group, 'Поста нет в профиле')
         self.assertIn(post_new, profile, 'Поста нет в группе')
-        self.assertIn(post_new, follower, 'Поста нет на странице подписчика')
 
 
 class FollowViewTest(TestCase):
@@ -231,6 +225,17 @@ class FollowViewTest(TestCase):
         )
         self.assertEqual(count_unfollow, 1)
         self.assertNotEqual(follow, unfollow)
+
+    def test_follow_page(self):
+        """Пост добавляется на страницу подписок"""
+        Follow.objects.create(
+            user=self.follower,
+            author=self.author
+        )
+        response = self.authorized_client.get(
+            reverse('posts:follow_index'))
+        follow = response.context['page_obj']
+        self.assertIn(self.post, follow, 'Поста нет на странице подписчика')
 
 
 class PaginatorViewsTests(TestCase):

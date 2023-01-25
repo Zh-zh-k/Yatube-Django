@@ -6,8 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-
-from posts.forms import PostForm
+from posts.forms import CommentForm, PostForm
 from posts.models import Comment, Group, Post
 
 User = get_user_model()
@@ -105,6 +104,22 @@ class PostFormTests(TestCase):
                 author=self.post.author
             ).exists()
         )
+
+
+class CommentFormTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='test_user')
+        cls.post = Post.objects.create(
+            author=cls.user,
+            text='Тестовый пост'
+        )
+        cls.form = CommentForm()
+
+    def setUp(self):
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
 
     def test_comment_added(self):
         comments_count = Comment.objects.count()
